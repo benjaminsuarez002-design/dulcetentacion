@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dulce Tentación — Panel</title>
+  <link rel="icon" type="image/png" href="https://iahonsflbuhfycbozyzd.supabase.co/storage/v1/object/public/Apariencia/icono.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #fbf6f1 0%, #f0e4dc 100%);
+      font-family: "Cormorant Garamond", serif;
+      color: #5b2c37;
+      padding: 32px 20px;
+    }
+
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 52px;
+    }
+
+    .logo-wrap img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+    }
+
+    .brand-name {
+      font-family: "Cinzel", serif;
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: #6b1931;
+      text-align: center;
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      color: #8b6c68;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: -6px;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: #dfc2b7;
+      margin: 0 auto 8px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .card {
+      flex: 1 1 240px;
+      max-width: 280px;
+      background: rgba(255, 251, 247, 0.92);
+      border: 1px solid #e8d4cc;
+      border-radius: 18px;
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 8px 32px rgba(107, 25, 49, 0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(107, 25, 49, 0.15);
+      border-color: #c9a09a;
+    }
+
+    .card-icon {
+      font-size: 2.6rem;
+      line-height: 1;
+    }
+
+    .card-title {
+      font-family: "Cinzel", serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: #6b1931;
+      text-align: center;
+    }
+
+    .card-desc {
+      font-size: 17px;
+      color: #8b6c68;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .card-btn {
+      margin-top: 8px;
+      padding: 10px 28px;
+      border-radius: 50px;
+      border: none;
+      font-family: "Cinzel", serif;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .card.store .card-btn {
+      background: #6b1931;
+      color: #fff;
+    }
+    .card.store .card-btn:hover { background: #4f1123; }
+
+    .card.admin .card-btn {
+      background: transparent;
+      color: #6b1931;
+      border: 1.5px solid #c9a09a;
+    }
+    .card.admin .card-btn:hover { background: #f5e8e4; }
+
+    .footer {
+      margin-top: 52px;
+      font-size: 14px;
+      color: #b09090;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo-wrap">
+    <img src="https://iahonsflbuhfycbozyzd.supabase.co/storage/v1/object/public/Apariencia/logo.png" alt="Dulce Tentación">
+    <div class="divider"></div>
+    <p class="brand-sub">Seleccioná una opción</p>
+  </div>
+
+  <div class="cards">
+
+    <a class="card store" href="index.html">
+      <span class="card-icon">🛍️</span>
+      <span class="card-title">Tienda</span>
+      <p class="card-desc">Ver la tienda pública con el catálogo de productos.</p>
+      <button class="card-btn">Ir a la tienda</button>
+    </a>
+
+    <a class="card admin" href="soloadmin.html">
+      <span class="card-icon">⚙️</span>
+      <span class="card-title">Administración</span>
+      <p class="card-desc">Gestionar artículos, precios, ofertas y portada.</p>
+      <button class="card-btn">Ir al admin</button>
+    </a>
+
+  </div>
+
+  <p class="footer">Dulce Tentación by Lolita &nbsp;·&nbsp; uso interno</p>
+
+</body>
+</html>

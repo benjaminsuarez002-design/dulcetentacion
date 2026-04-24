@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solo Admin | Dulce Tentacion</title>
+  <link rel="icon" type="image/png" href="https://iahonsflbuhfycbozyzd.supabase.co/storage/v1/object/public/Apariencia/icono.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f1ea;
+      --panel: rgba(255, 251, 247, 0.92);
+      --line: #dec1b6;
+      --line-soft: rgba(123, 67, 82, 0.14);
+      --wine: #6b1931;
+      --wine-deep: #4f1123;
+      --text: #5d2a37;
+      --muted: #8b6764;
+      --shadow: 0 22px 55px rgba(107, 25, 49, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.94), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(227,205,193,.42), transparent 22%),
+        linear-gradient(180deg, #fbf6f1 0%, #f8f2ec 100%);
+      color: var(--text);
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 12%, rgba(128,66,84,.05) 0 2px, transparent 2px),
+        radial-gradient(circle at 84% 78%, rgba(128,66,84,.04) 0 2px, transparent 2px);
+      background-size: 160px 160px, 130px 130px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    button, input, textarea { font: inherit; }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .shell {
+      background: linear-gradient(180deg, rgba(255,251,247,.92) 0%, rgba(250,244,238,.95) 100%);
+      border: 1px solid rgba(155,111,108,.18);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .header {
+      padding: 24px 30px 18px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(255,250,246,.78);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header img {
+      display: block;
+      width: min(360px, 42vw);
+      max-width: 100%;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .header-pill,
+    .header-link,
+    .primary-button,
+    .secondary-button,
+    .chip-toggle,
+    .icon-button,
+    .tab-button {
+      border: 0;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .header-pill {
+      min-height: 42px;
+      border-radius: 999px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #7a213b 0%, var(--wine) 100%);
+      color: #fff7f4;
+      font-family: "Marcellus", serif;
+    }
+
+    .header-link,
+    .secondary-button,
+    .chip-toggle,
+    .icon-button {
+      min-height: 42px;
+      border-radius: 999px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background: rgba(255,255,255,.76);
+      color: var(--wine);
+      border: 1px solid var(--line);
+    }
+
+    .tab-row {
+      padding: 18px 30px 0;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      min-height: 48px;
+      border-radius: 999px;
+      padding: 0 20px;
+      background: rgba(255,255,255,.7);
+      color: var(--wine);
+      border: 1px solid var(--line);
+      font-family: "Marcellus", serif;
+      letter-spacing: .3px;
+      font-size: 17px;
+    }
+
+    .tab-button.active,
+    .chip-toggle.active,
+    .primary-button {
+      background: linear-gradient(180deg, #7a213b 0%, var(--wine) 100%);
+      color: #fff7f4;
+      border-color: transparent;
+      box-shadow: 0 12px 24px rgba(107,25,49,.14);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 24px 30px 30px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 520px) minmax(420px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(153,111,105,.18);
+      border-radius: 28px;
+      box-shadow: 0 14px 34px rgba(107,25,49,.08);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.35);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .panel-head h2,
+    .hero-title,
+    .portada-section-title {
+      font-size: 34px;
+      color: var(--wine);
+      line-height: .95;
+    }
+
+    .panel-subtitle,
+    .hero-copy,
+    .helper,
+    .counter,
+    .item-line,
+    .selection-meta,
+    .modal-subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.32;
+    }
+
+    .panel-body {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .field-grid,
+    .two-cols {
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-cols {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 15px;
+      color: var(--wine);
+      font-family: "Marcellus", serif;
+      text-transform: uppercase;
+      letter-spacing: .35px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.76);
+      color: var(--text);
+      padding: 12px 16px;
+      outline: none;
+      font-size: 19px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .field-note {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.32;
+      text-transform: none;
+      letter-spacing: 0;
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .drop-zone {
+      position: relative;
+      min-height: 210px;
+      border-radius: 24px;
+      border: 1px dashed rgba(107,25,49,.28);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.82), transparent 22%),
+        linear-gradient(180deg, rgba(255,250,246,.94) 0%, rgba(248,239,233,.92) 100%);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .drop-zone.drag-over {
+      border-style: solid;
+      box-shadow: inset 0 0 0 2px rgba(107,25,49,.14);
+    }
+
+    .drop-zone.has-image {
+      padding: 0;
+      border-style: solid;
+    }
+
+    .drop-zone img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .drop-copy {
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 18px;
+      z-index: 1;
+    }
+
+    .drop-copy strong {
+      color: var(--wine);
+      font-family: "Marcellus", serif;
+      font-size: 18px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: .35px;
+    }
+
+    .drop-remove {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(79,17,35,.78);
+      color: #fff;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .status-box {
+      min-height: 24px;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    .status-box.success { color: #2d6a4f; }
+    .status-box.error { color: #a61e4d; }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .primary-button,
+    .secondary-button {
+      min-height: 46px;
+      border-radius: 999px;
+      padding: 0 22px;
+      font-size: 18px;
+      font-family: "Marcellus", serif;
+    }
+
+    .search-shell {
+      display: grid;
+      gap: 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.76);
+      padding: 0 18px;
+      color: var(--muted);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      outline: none;
+      font-size: 18px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip-toggle {
+      min-height: 40px;
+      padding: 0 16px;
+      font-size: 16px;
+      font-family: "Marcellus", serif;
+    }
+
+    .counter strong {
+      color: var(--wine);
+    }
+
+    .list {
+      display: grid;
+      gap: 14px;
+      max-height: 820px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .list::-webkit-scrollbar,
+    .selection-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .list::-webkit-scrollbar-thumb,
+    .selection-list::-webkit-scrollbar-thumb {
+      background: rgba(107,25,49,.18);
+      border-radius: 999px;
+    }
+
+    .admin-item {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,255,255,.72);
+    }
+
+    .admin-thumb,
+    .selection-thumb,
+    .portada-thumb {
+      width: 96px;
+      min-height: 110px;
+      border-radius: 18px;
+      border: 1px solid rgba(153,111,105,.14);
+      background: linear-gradient(180deg, rgba(255,250,246,.96) 0%, rgba(248,239,233,.92) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--muted);
+      font-family: "Marcellus", serif;
+    }
+
+    .admin-thumb img,
+    .selection-thumb img,
+    .portada-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .item-title {
+      font-size: 30px;
+      color: var(--wine);
+      line-height: .95;
+      margin-bottom: 6px;
+    }
+
+    .item-lines {
+      display: grid;
+      gap: 2px;
+    }
+
+    .price-line {
+      font-size: 26px;
+      color: var(--wine);
+      line-height: .95;
+      margin-top: 8px;
+    }
+
+    .price-line small {
+      font-size: 18px;
+      color: var(--muted);
+      text-decoration: line-through;
+      margin-right: 8px;
+    }
+
+    .label-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .label-pill,
+    .mode-pill {
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-family: "Marcellus", serif;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(153,111,105,.18);
+      color: var(--wine);
+    }
+
+    .item-actions {
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    .portada-shell {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      padding: 24px;
+      border-radius: 28px;
+      border: 1px solid rgba(153,111,105,.18);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.82), transparent 24%),
+        linear-gradient(180deg, rgba(255,249,244,.94) 0%, rgba(250,241,235,.92) 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(300px, .9fr);
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero-kicker,
+    .portada-section-kicker {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      font-family: "Marcellus", serif;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      padding: 18px 14px;
+      border-radius: 24px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,255,255,.76);
+      text-align: center;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 32px;
+      color: var(--wine);
+      line-height: .9;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      font-size: 15px;
+      font-family: "Marcellus", serif;
+    }
+
+    .portada-sections {
+      display: grid;
+      gap: 18px;
+    }
+
+    .portada-section {
+      border-radius: 28px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,255,255,.74);
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .portada-section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .portada-section-subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.32;
+      max-width: 860px;
+    }
+
+    .portada-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .portada-card {
+      border-radius: 22px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,255,255,.84);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .portada-card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .portada-card button {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.9);
+      color: var(--wine);
+      cursor: pointer;
+      font-family: "Marcellus", serif;
+    }
+
+    .portada-name {
+      font-size: 24px;
+      color: var(--wine);
+      line-height: .95;
+    }
+
+    .portada-detail {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.28;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(63, 27, 37, .38);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      border-radius: 30px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,251,247,.98);
+      box-shadow: 0 30px 70px rgba(79,17,35,.18);
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .modal.small { width: min(460px, 100%); }
+    .modal.medium { width: min(660px, 100%); }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .modal-title {
+      font-size: 34px;
+      color: var(--wine);
+      line-height: .95;
+    }
+
+    .modal-close {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.76);
+      color: var(--wine);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .selection-list {
+      display: grid;
+      gap: 12px;
+      max-height: 440px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .selection-item {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 22px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,255,255,.84);
+      cursor: pointer;
+    }
+
+    .selection-item.selected {
+      border-color: rgba(107,25,49,.32);
+      box-shadow: 0 0 0 2px rgba(107,25,49,.08);
+    }
+
+    .selection-order {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(107,25,49,.08);
+      color: var(--wine);
+      font-family: "Marcellus", serif;
+      font-size: 17px;
+    }
+
+    .apply-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .offer-preview {
+      border-radius: 22px;
+      border: 1px solid rgba(153,111,105,.18);
+      background: rgba(255,255,255,.82);
+      padding: 16px;
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .offer-preview strong {
+      color: var(--wine);
+      font-weight: 600;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) translateY(120%);
+      min-width: min(520px, calc(100vw - 30px));
+      padding: 14px 20px;
+      border-radius: 20px;
+      background: rgba(79,17,35,.92);
+      color: #fff7f4;
+      text-align: center;
+      box-shadow: 0 18px 34px rgba(79,17,35,.24);
+      transition: transform .25s ease;
+      z-index: 80;
+      font-size: 18px;
+    }
+
+    .toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.error {
+      background: rgba(148, 27, 58, .94);
+    }
+
+    .empty-state {
+      border-radius: 24px;
+      border: 1px dashed rgba(153,111,105,.24);
+      padding: 24px 18px;
+      background: rgba(255,255,255,.56);
+      color: var(--muted);
+      text-align: center;
+      font-size: 19px;
+    }
+
+    @media (max-width: 1180px) {
+      .grid,
+      .hero,
+      .portada-preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(1380px, calc(100vw - 18px));
+      }
+
+      .header,
+      .tab-row,
+      .tab-panel {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .two-cols,
+      .stats-grid,
+      .apply-fields,
+      .selection-item,
+      .admin-item {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .item-actions {
+        justify-items: start;
+        grid-auto-flow: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="shell">
+      <header class="header">
+        <img src="https://iahonsflbuhfycbozyzd.supabase.co/storage/v1/object/public/Apariencia/logo.png" alt="Dulce Tentacion by Lolita">
+        <div class="header-actions">
+          <a class="header-link" href="index.html">Ver tienda</a>
+          <span class="header-pill">Administrador</span>
+        </div>
+      </header>
+
+      <div class="tab-row">
+        <button class="tab-button active" type="button" data-tab="articulos">Articulos</button>
+        <button class="tab-button" type="button" data-tab="portada">Portada</button>
+      </div>
+
+      <section class="tab-panel active" data-panel="articulos">
+        <div class="grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Cargar articulo</h2>
+                <p class="panel-subtitle">Conserva la estetica actual, pero con el flujo del admin viejo: alta, lista y edicion completa.</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="two-cols">
+                <label>Codigo de articulo
+                  <input id="fCodigo" type="text" placeholder="Ej: 000101">
+                </label>
+                <label>Nombre del articulo
+                  <input id="fNombre" type="text" placeholder="Ej: Conjunto Encaje Sofia">
+                </label>
+              </div>
+
+              <label>Detalle / descripcion
+                <textarea id="fDetalle" placeholder="Descripcion, color, corte, telas, etc."></textarea>
+              </label>
+
+              <div class="two-cols">
+                <label>Rubro
+                  <input id="fRubro" type="text" placeholder="Ej: Conjuntos">
+                </label>
+                <label>Stock
+                  <input id="fStock" type="text" placeholder="Ej: 8 disponibles">
+                </label>
+              </div>
+
+              <label>Tags invisibles
+                <textarea id="fTagsOcultos" placeholder="Ej: encaje, less, aro, rojo"></textarea>
+                <span class="field-note">No se muestran al cliente. Sirven para encontrar articulos mas rapido desde el admin.</span>
+              </label>
+
+              <label>Precio de venta
+                <input id="fPrecio" type="number" min="0" step="0.01" placeholder="Ej: 24990">
+              </label>
+
+              <label>Foto del articulo
+                <div class="drop-zone" id="dropZoneNuevo">
+                  <input id="fFoto" type="file" accept="image/*">
+                  <div class="drop-copy">
+                    <strong>Elegi una imagen</strong>
+                    <span>Podes arrastrarla o hacer clic. La subida a Supabase se hace al guardar.</span>
+                    <span>La imagen es opcional.</span>
+                  </div>
+                </div>
+              </label>
+
+              <div class="helper">Las etiquetas visuales como oferta, destacado y mas vendido se manejan desde editar, igual que en el admin original.</div>
+
+              <div id="formStatus" class="status-box"></div>
+
+              <div class="actions">
+                <button class="primary-button" id="btnGuardar" type="button">Guardar articulo</button>
+                <button class="secondary-button" id="btnLimpiar" type="button">Limpiar ficha</button>
+                <a class="secondary-button" href="index.html">Ver tienda</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Articulos cargados</h2>
+                <p class="panel-subtitle">Busca, filtra, edita, borra o replica cambios a otros articulos.</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="search-shell">
+                <div class="search-box">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-3.6-3.6"></path>
+                  </svg>
+                  <input id="searchAdmin" type="text" placeholder="Buscar, rubro:conjuntos, precio<30000, etc.">
+                </div>
+                <div class="chip-row" id="adminChipFilters">
+                  <button class="chip-toggle" type="button" data-chip="">Todo</button>
+                  <button class="chip-toggle" type="button" data-chip="oferta">En oferta</button>
+                  <button class="chip-toggle" type="button" data-chip="destacado">Destacado</button>
+                  <button class="chip-toggle" type="button" data-chip="masVendido">Mas vendido</button>
+                </div>
+                <div class="counter" id="artContador">Cargando articulos...</div>
+              </div>
+
+              <div id="listaArticulos" class="list"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-panel="portada">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Portada del index</h2>
+              <p class="panel-subtitle" id="portadaToolbarSub">Modo actual: automatico. Elegi manualmente que queres mostrar en cada bloque.</p>
+            </div>
+            <button class="primary-button" id="btnPortadaAutomatico" type="button">Automatico</button>
+          </div>
+          <div class="panel-body portada-shell">
+            <section class="hero">
+              <div>
+                <div class="hero-kicker">Preview del inicio</div>
+                <div class="hero-title">Ofertas, destacados y lo que mas sale</div>
+                <p class="hero-copy">Esta vista replica la portada publica. Si dejas el modo automatico, el sistema acomoda solo que sale. Si elegis manual, controlas exactamente que articulo aparece en cada bloque.</p>
+                <div class="hero-actions">
+                  <button class="secondary-button" type="button" data-open-portada="destacado">Editar destacados</button>
+                  <button class="secondary-button" type="button" data-open-portada="masVendido">Editar mas vendidos</button>
+                  <button class="secondary-button" type="button" data-open-portada="oferta">Editar ofertas</button>
+                </div>
+              </div>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <span class="stat-value" id="portadaStatDestacado">0</span>
+                  <span class="stat-label">Destacados</span>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-value" id="portadaStatMasVendido">0</span>
+                  <span class="stat-label">Mas vendidos</span>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-value" id="portadaStatOferta">0</span>
+                  <span class="stat-label">Ofertas</span>
+                </div>
+              </div>
+            </section>
+
+            <div class="portada-sections" id="portadaSections"></div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Editar articulo</div>
+          <div class="modal-subtitle">Aca quedan los mismos botones clave del admin viejo: guardar, borrar, configurar oferta y aplicar cambios a otros articulos.</div>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="modalOverlay">✕</button>
+      </div>
+
+      <input id="editId" type="hidden">
+
+      <div class="two-cols">
+        <label>Codigo
+          <input id="editCodigo" type="text">
+        </label>
+        <label>Nombre
+          <input id="editNombre" type="text">
+        </label>
+      </div>
+
+      <label>Detalle
+        <textarea id="editDetalle"></textarea>
+      </label>
+
+      <div class="two-cols">
+        <label>Rubro
+          <input id="editRubro" type="text">
+        </label>
+        <label>Stock
+          <input id="editStock" type="text">
+        </label>
+      </div>
+
+      <label>Tags invisibles
+        <textarea id="editTagsOcultos"></textarea>
+      </label>
+
+      <label>Etiquetas
+        <div class="chip-row">
+          <button class="chip-toggle" id="editChipOferta" type="button">En oferta</button>
+          <button class="chip-toggle" id="editChipDestacado" type="button">Destacado</button>
+          <button class="chip-toggle" id="editChipMasVendido" type="button">Mas vendido</button>
+        </div>
+      </label>
+
+      <div class="helper" id="ofertaSummary"></div>
+
+      <label>Precio
+        <input id="editPrecio" type="number" min="0" step="0.01">
+      </label>
+
+      <label>Foto del articulo
+        <div class="drop-zone" id="dropZoneEdit">
+          <input id="editFoto" type="file" accept="image/*">
+          <div class="drop-copy">
+            <strong>Elegi una imagen</strong>
+            <span>Podes arrastrarla, hacer clic o pegar una captura con Ctrl+V.</span>
+          </div>
+        </div>
+      </label>
+
+      <div id="editStatus" class="status-box"></div>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" data-close-modal="modalOverlay">Cancelar</button>
+        <button class="secondary-button" id="btnAplicarRelacionados" type="button">Aplicar cambios tambien a</button>
+        <button class="primary-button" id="btnGuardarEdit" type="button">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOferta">
+    <div class="modal small">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Configurar oferta</div>
+          <div class="modal-subtitle">La oferta vive dentro del articulo y despues alimenta tanto la lista como la portada.</div>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="modalOferta">✕</button>
+      </div>
+
+      <div id="offerPreview" class="offer-preview"></div>
+
+      <label>Porcentaje de descuento
+        <input id="ofertaPctInput" type="number" min="1" max="99" step="0.01" placeholder="Ej: 10">
+      </label>
+
+      <label>Hasta
+        <input id="ofertaHastaInput" type="date">
+      </label>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" id="btnCancelarOferta">Cancelar</button>
+        <button class="primary-button" type="button" id="btnGuardarOferta">Guardar oferta</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalApplyTargets">
+    <div class="modal medium">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Aplicar cambios tambien a</div>
+          <div class="modal-subtitle">Marca los articulos a los que quieras copiar cambios desde el articulo que estas editando.</div>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="modalApplyTargets">✕</button>
+      </div>
+
+      <div class="search-shell">
+        <div class="search-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.6-3.6"></path>
+          </svg>
+          <input id="applyTargetsSearch" type="text" placeholder="Buscar articulos...">
+        </div>
+        <div class="chip-row" id="applyTargetsFilters">
+          <button class="chip-toggle" type="button" data-chip="">Todo</button>
+          <button class="chip-toggle" type="button" data-chip="oferta">En oferta</button>
+          <button class="chip-toggle" type="button" data-chip="destacado">Destacado</button>
+          <button class="chip-toggle" type="button" data-chip="masVendido">Mas vendido</button>
+        </div>
+        <div class="counter" id="applyTargetsCounter">0 seleccionados</div>
+      </div>
+
+      <div id="applyTargetsList" class="selection-list"></div>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" data-close-modal="modalApplyTargets">Cancelar</button>
+        <button class="primary-button" id="btnContinuarApplyTargets" type="button">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalApplyFields">
+    <div class="modal small">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Que aplicar</div>
+          <div class="modal-subtitle">Elige exactamente que queres copiar a los articulos seleccionados.</div>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="modalApplyFields">✕</button>
+      </div>
+
+      <div class="apply-fields" id="applyFieldsGrid">
+        <button class="chip-toggle" type="button" data-field="etiquetas">Etiquetas</button>
+        <button class="chip-toggle" type="button" data-field="detalle">Detalle</button>
+        <button class="chip-toggle" type="button" data-field="tags">Tags</button>
+        <button class="chip-toggle" type="button" data-field="foto">Foto</button>
+      </div>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" id="btnCancelarApplyFields">Cancelar</button>
+        <button class="primary-button" type="button" id="btnAplicarCamposSeleccionados">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalPortadaTargets">
+    <div class="modal medium">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title" id="modalPortadaTargetsTitle">Editar portada</div>
+          <div class="modal-subtitle" id="modalPortadaTargetsSubtitle">Selecciona manualmente que articulos quieres publicar en esta seccion.</div>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="modalPortadaTargets">✕</button>
+      </div>
+
+      <div class="search-shell">
+        <div class="search-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.6-3.6"></path>
+          </svg>
+          <input id="portadaTargetsSearch" type="text" placeholder="Buscar articulos...">
+        </div>
+        <div class="chip-row" id="portadaTargetsFilters">
+          <button class="chip-toggle" type="button" data-chip="">Todo</button>
+          <button class="chip-toggle" type="button" data-chip="oferta">En oferta</button>
+          <button class="chip-toggle" type="button" data-chip="destacado">Destacado</button>
+          <button class="chip-toggle" type="button" data-chip="masVendido">Mas vendido</button>
+        </div>
+        <div class="counter" id="portadaTargetsCounter">0 seleccionados</div>
+      </div>
+
+      <div id="portadaTargetsList" class="selection-list"></div>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" data-close-modal="modalPortadaTargets">Cancelar</button>
+        <button class="primary-button" type="button" id="btnGuardarPortadaTargets">Guardar seleccion</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, getDoc, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-lite.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPMr7f73NUeg2Lqcmg5S_BTNJQw_T4qjY",
+      authDomain: "dulce-tentacion-7c385.firebaseapp.com",
+      projectId: "dulce-tentacion-7c385",
+      storageBucket: "dulce-tentacion-7c385.firebasestorage.app",
+      messagingSenderId: "211955796801",
+      appId: "1:211955796801:web:5ca4da94a128bec0f02fc0"
+    };
+
+    const SUPABASE_URL = "https://iahonsflbuhfycbozyzd.supabase.co";
+    const SUPABASE_BUCKET = "Articulos";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhaG9uc2ZsYnVoZnljYm96eXpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NzAyMjYsImV4cCI6MjA5MjU0NjIyNn0.cGHZi92dqx_63g6UjqeNGJcq7tRHH24NufKMQ5xutQU";
+    const CLOUDINARY_CLOUD_NAME = "di1iuo3du";
+    const CLOUDINARY_API_KEY = "229329598895986";
+    const CLOUDINARY_API_SECRET = "oDeGBgaHNaxGDkimqMnpq3saQrU";
+    const CATALOG_PUBLIC_ID = "dulce-tentacion/articulos.json";
+    const CATALOG_JSON_URL = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/raw/upload/${CATALOG_PUBLIC_ID}`;
+    const HOME_LANDING_DOC_ID = "homeLanding";
+    const fallbackImage = "https://iahonsflbuhfycbozyzd.supabase.co/storage/v1/object/public/Articulos/263aed3e-acdc-4bbb-bcbc-8e544378cd62.png";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const refs = {
+      tabButtons: [...document.querySelectorAll("[data-tab]")],
+      panels: [...document.querySelectorAll("[data-panel]")],
+      formStatus: document.getElementById("formStatus"),
+      editStatus: document.getElementById("editStatus"),
+      toast: document.getElementById("toast"),
+      fCodigo: document.getElementById("fCodigo"),
+      fNombre: document.getElementById("fNombre"),
+      fDetalle: document.getElementById("fDetalle"),
+      fRubro: document.getElementById("fRubro"),
+      fStock: document.getElementById("fStock"),
+      fTagsOcultos: document.getElementById("fTagsOcultos"),
+      fPrecio: document.getElementById("fPrecio"),
+      fFoto: document.getElementById("fFoto"),
+      dropZoneNuevo: document.getElementById("dropZoneNuevo"),
+      btnGuardar: document.getElementById("btnGuardar"),
+      btnLimpiar: document.getElementById("btnLimpiar"),
+      searchAdmin: document.getElementById("searchAdmin"),
+      listaArticulos: document.getElementById("listaArticulos"),
+      artContador: document.getElementById("artContador"),
+      adminChipFilters: [...document.querySelectorAll("#adminChipFilters [data-chip]")],
+      portadaToolbarSub: document.getElementById("portadaToolbarSub"),
+      btnPortadaAutomatico: document.getElementById("btnPortadaAutomatico"),
+      portadaSections: document.getElementById("portadaSections"),
+      portadaStatDestacado: document.getElementById("portadaStatDestacado"),
+      portadaStatMasVendido: document.getElementById("portadaStatMasVendido"),
+      portadaStatOferta: document.getElementById("portadaStatOferta"),
+      modalOverlay: document.getElementById("modalOverlay"),
+      editId: document.getElementById("editId"),
+      editCodigo: document.getElementById("editCodigo"),
+      editNombre: document.getElementById("editNombre"),
+      editDetalle: document.getElementById("editDetalle"),
+      editRubro: document.getElementById("editRubro"),
+      editStock: document.getElementById("editStock"),
+      editTagsOcultos: document.getElementById("editTagsOcultos"),
+      editPrecio: document.getElementById("editPrecio"),
+      editChipOferta: document.getElementById("editChipOferta"),
+      editChipDestacado: document.getElementById("editChipDestacado"),
+      editChipMasVendido: document.getElementById("editChipMasVendido"),
+      ofertaSummary: document.getElementById("ofertaSummary"),
+      editFoto: document.getElementById("editFoto"),
+      dropZoneEdit: document.getElementById("dropZoneEdit"),
+      btnGuardarEdit: document.getElementById("btnGuardarEdit"),
+      btnAplicarRelacionados: document.getElementById("btnAplicarRelacionados"),
+      modalOferta: document.getElementById("modalOferta"),
+      ofertaPctInput: document.getElementById("ofertaPctInput"),
+      ofertaHastaInput: document.getElementById("ofertaHastaInput"),
+      offerPreview: document.getElementById("offerPreview"),
+      btnGuardarOferta: document.getElementById("btnGuardarOferta"),
+      btnCancelarOferta: document.getElementById("btnCancelarOferta"),
+      modalApplyTargets: document.getElementById("modalApplyTargets"),
+      applyTargetsSearch: document.getElementById("applyTargetsSearch"),
+      applyTargetsCounter: document.getElementById("applyTargetsCounter"),
+      applyTargetsList: document.getElementById("applyTargetsList"),
+      btnContinuarApplyTargets: document.getElementById("btnContinuarApplyTargets"),
+      applyTargetsFilters: [...document.querySelectorAll("#applyTargetsFilters [data-chip]")],
+      modalApplyFields: document.getElementById("modalApplyFields"),
+      applyFieldButtons: [...document.querySelectorAll("#applyFieldsGrid [data-field]")],
+      btnCancelarApplyFields: document.getElementById("btnCancelarApplyFields"),
+      btnAplicarCamposSeleccionados: document.getElementById("btnAplicarCamposSeleccionados"),
+      modalPortadaTargets: document.getElementById("modalPortadaTargets"),
+      modalPortadaTargetsTitle: document.getElementById("modalPortadaTargetsTitle"),
+      modalPortadaTargetsSubtitle: document.getElementById("modalPortadaTargetsSubtitle"),
+      portadaTargetsSearch: document.getElementById("portadaTargetsSearch"),
+      portadaTargetsCounter: document.getElementById("portadaTargetsCounter"),
+      portadaTargetsList: document.getElementById("portadaTargetsList"),
+      btnGuardarPortadaTargets: document.getElementById("btnGuardarPortadaTargets"),
+      portadaTargetsFilters: [...document.querySelectorAll("#portadaTargetsFilters [data-chip]")]
+    };
+
+    const state = {
+      tab: "articulos",
+      articles: [],
+      filterChip: "",
+      search: "",
+      portadaConfig: { mode: "auto", sections: { destacado: [], masVendido: [], oferta: [] } },
+      newImageFile: null,
+      newImagePreview: "",
+      editImageFile: null,
+      editImagePreview: "",
+      editImageRemoved: false,
+      editingMeta: { oferta: false, destacado: false, masVendido: false, ofertaPct: 0, ofertaHasta: "" },
+      editingOriginalPhoto: "",
+      offerSnapshot: null,
+      applyTargetsSelection: new Set(),
+      applyTargetsChip: "",
+      applyFieldsSelection: new Set(),
+      portadaTargetsDraft: [],
+      portadaTargetsChip: "",
+      portadaTargetsSection: "",
+      portadaSlotIndex: null
+    };
+
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function nowIso() {
+      return new Date().toISOString();
+    }
+
+    function toBool(value) {
+      return value === true || value === "true" || value === 1 || value === "1";
+    }
+
+    function clampPct(value) {
+      const parsed = Number(value || 0);
+      if (!Number.isFinite(parsed)) return 0;
+      return Math.max(0, Math.min(99, parsed));
+    }
+
+    function sanitizeIsoDate(value) {
+      const raw = String(value || "").trim();
+      return /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : "";
+    }
+
+    function todayIso() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function createdAtToMs(value) {
+      if (!value) return 0;
+      if (typeof value.toMillis === "function") return value.toMillis();
+      if (typeof value.seconds === "number") return value.seconds * 1000;
+      const ms = new Date(value).getTime();
+      return Number.isFinite(ms) ? ms : 0;
+    }
+
+    function normalizeTags(value) {
+      if (Array.isArray(value)) return value.map((item) => String(item || "").trim()).filter(Boolean);
+      return String(value || "")
+        .split(/[\n,;]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function tagsToText(value) {
+      return normalizeTags(value).join(", ");
+    }
+
+    function normalizeArticle(raw = {}, docId = "") {
+      return {
+        id: docId || String(raw.codigo || "").trim(),
+        codigo: String(raw.codigo || docId || "").trim(),
+        nombre: String(raw.nombre || "").trim(),
+        detalle: String(raw.detalle || raw.descripcion || "").trim(),
+        rubro: String(raw.rubro || raw.categoria || "").trim(),
+        stock: String(raw.stock ?? "").trim(),
+        tagsOcultos: normalizeTags(raw.tagsOcultos),
+        precio: Number(raw.precio || 0),
+        fotoUrl: String(raw.fotoUrl || raw.imagenUrl || "").trim(),
+        oferta: toBool(raw.oferta),
+        ofertaPct: clampPct(raw.ofertaPct || raw.descuentoOferta),
+        ofertaHasta: sanitizeIsoDate(raw.ofertaHasta),
+        destacado: toBool(raw.destacado),
+        masVendido: toBool(raw.masVendido),
+        createdAt: raw.createdAt || nowIso(),
+        updatedAt: raw.updatedAt || raw.createdAt || nowIso()
+      };
+    }
+
+    function serializeArticleForCatalog(article) {
+      const normalized = normalizeArticle(article, article?.codigo || "");
+      return {
+        codigo: normalized.codigo,
+        nombre: normalized.nombre,
+        detalle: normalized.detalle,
+        rubro: normalized.rubro,
+        stock: normalized.stock,
+        tagsOcultos: normalizeTags(normalized.tagsOcultos),
+        precio: Number(normalized.precio || 0),
+        fotoUrl: normalized.fotoUrl || "",
+        oferta: !!normalized.oferta,
+        ofertaPct: clampPct(normalized.ofertaPct),
+        ofertaHasta: sanitizeIsoDate(normalized.ofertaHasta),
+        destacado: !!normalized.destacado,
+        masVendido: !!normalized.masVendido,
+        createdAt: normalized.createdAt || nowIso(),
+        updatedAt: normalized.updatedAt || nowIso()
+      };
+    }
+
+    function buildCatalogPayload(list) {
+      return {
+        updatedAt: Date.now(),
+        articulos: sortArticles(list).map(serializeArticleForCatalog)
+      };
+    }
+
+    function extractCatalogArticles(payload) {
+      if (Array.isArray(payload)) return payload;
+      if (payload && Array.isArray(payload.articulos)) return payload.articulos;
+      return [];
+    }
+
+    function articleToFirestore(article) {
+      return {
+        codigo: article.codigo,
+        nombre: article.nombre,
+        detalle: article.detalle,
+        rubro: article.rubro,
+        stock: article.stock,
+        tagsOcultos: normalizeTags(article.tagsOcultos),
+        precio: Number(article.precio || 0),
+        fotoUrl: article.fotoUrl || "",
+        oferta: !!article.oferta,
+        ofertaPct: clampPct(article.ofertaPct),
+        ofertaHasta: sanitizeIsoDate(article.ofertaHasta),
+        destacado: !!article.destacado,
+        masVendido: !!article.masVendido,
+        createdAt: article.createdAt || nowIso(),
+        updatedAt: article.updatedAt || nowIso()
+      };
+    }
+
+    async function fetchJson(url, { allowMissing = false } = {}) {
+      const response = await fetch(`${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`, { cache: "no-store" });
+      if (allowMissing && response.status === 404) return null;
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "");
+        throw new Error(errorText || `Error HTTP ${response.status}`);
+      }
+      return await response.json();
+    }
+
+    async function loadCatalogArticles() {
+      const payload = await fetchJson(CATALOG_JSON_URL, { allowMissing: true });
+      return sortArticles(extractCatalogArticles(payload).map((item) => normalizeArticle(item, item?.codigo || "")));
+    }
+
+    function ensureCloudinaryJsonConfigured() {
+      if (!CLOUDINARY_JSON_UPLOAD_PRESET || CLOUDINARY_JSON_UPLOAD_PRESET === "CONFIGURAR_PRESET_JSON") {
+        throw new Error("Configura el upload preset unsigned de Cloudinary para publicar el catalogo JSON.");
+      }
+    }
+
+    async function cloudinarySign(params) {
+      const str = Object.keys(params).sort().map(k => `${k}=${params[k]}`).join("&") + CLOUDINARY_API_SECRET;
+      const buffer = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function publishCatalogJson(list) {
+      const payload = buildCatalogPayload(list);
+      const timestamp = Math.floor(Date.now() / 1000);
+      const paramsToSign = { invalidate: "true", public_id: CATALOG_PUBLIC_ID, timestamp };
+      const signature = await cloudinarySign(paramsToSign);
+
+      const formData = new FormData();
+      formData.append("file", new Blob([JSON.stringify(payload)], { type: "application/json" }), "articulos.json");
+      formData.append("api_key", CLOUDINARY_API_KEY);
+      formData.append("timestamp", timestamp);
+      formData.append("public_id", CATALOG_PUBLIC_ID);
+      formData.append("invalidate", "true");
+      formData.append("signature", signature);
+
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "No se pudo publicar el catalogo JSON en Cloudinary.");
+      }
+
+      await setDoc(doc(db, "config", "catalogVersion"), { updatedAt: Date.now() });
+      return data.secure_url || CATALOG_JSON_URL;
+    }
+
+    function sanitizeHomeLandingCodes(value) {
+      return [...new Set((Array.isArray(value) ? value : []).map((item) => String(item || "").trim()).filter(Boolean))];
+    }
+
+    function sanitizeHomeLandingConfig(raw) {
+      const sections = raw?.sections || raw?.listas || {};
+      return {
+        mode: raw?.mode === "manual" ? "manual" : "auto",
+        sections: {
+          destacado: sanitizeHomeLandingCodes(sections.destacado),
+          masVendido: sanitizeHomeLandingCodes(sections.masVendido),
+          oferta: sanitizeHomeLandingCodes(sections.oferta)
+        }
+      };
+    }
+
+    function offerActive(article) {
+      return !!(article.oferta && clampPct(article.ofertaPct) > 0 && article.ofertaHasta && article.ofertaHasta >= todayIso());
+    }
+
+    function offerPrice(precio, pct) {
+      return Math.round(Number(precio || 0) * ((100 - clampPct(pct)) / 100) * 100) / 100;
+    }
+
+    function formatPrice(value) {
+      return new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(Number(value || 0));
+    }
+
+    function formatDate(iso) {
+      const clean = sanitizeIsoDate(iso);
+      if (!clean) return "-";
+      const [year, month, day] = clean.split("-");
+      return `${day}/${month}/${year}`;
+    }
+
+    function normalizeSearchText(text) {
+      return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function searchableText(article) {
+      return normalizeSearchText([
+        article.codigo,
+        article.nombre,
+        article.detalle,
+        article.rubro,
+        article.stock,
+        ...(article.tagsOcultos || [])
+      ].join(" "));
+    }
+
+    function parseSearch(rawQuery) {
+      let query = String(rawQuery || "").trim();
+      let rubro = "";
+      let priceOp = "";
+      let priceValue = 0;
+
+      const rubroMatch = query.match(/rubro:([^\s]+)/i);
+      if (rubroMatch) {
+        rubro = normalizeSearchText(rubroMatch[1]);
+        query = query.replace(rubroMatch[0], " ");
+      }
+
+      const priceMatch = query.match(/precio\s*([<>])\s*(\d+(?:[.,]\d+)?)/i);
+      if (priceMatch) {
+        priceOp = priceMatch[1];
+        priceValue = Number(String(priceMatch[2] || "0").replace(",", "."));
+        query = query.replace(priceMatch[0], " ");
+      }
+
+      const tokens = normalizeSearchText(query).split(" ").filter(Boolean);
+      return { tokens, rubro, priceOp, priceValue };
+    }
+
+    function matchesFilters(article, query, chip = "", excludeCode = "") {
+      if (excludeCode && article.codigo === excludeCode) return false;
+
+      const parsed = parseSearch(query);
+      if (chip === "oferta" && !offerActive(article)) return false;
+      if (chip === "destacado" && !article.destacado) return false;
+      if (chip === "masVendido" && !article.masVendido) return false;
+
+      if (parsed.rubro && normalizeSearchText(article.rubro) !== parsed.rubro) return false;
+      if (parsed.priceOp === "<" && Number(article.precio || 0) >= parsed.priceValue) return false;
+      if (parsed.priceOp === ">" && Number(article.precio || 0) <= parsed.priceValue) return false;
+
+      const haystack = searchableText(article);
+      return parsed.tokens.every((token) => haystack.includes(token));
+    }
+
+    function sortArticles(list) {
+      return [...list].sort((a, b) => {
+        const timeDelta = createdAtToMs(b.updatedAt || b.createdAt) - createdAtToMs(a.updatedAt || a.createdAt);
+        if (timeDelta) return timeDelta;
+        return String(a.nombre || "").localeCompare(String(b.nombre || ""), "es", { sensitivity: "base" });
+      });
+    }
+
+    function setStatus(element, message = "", type = "") {
+      element.textContent = message;
+      element.className = `status-box${type ? ` ${type}` : ""}`;
+    }
+
+    let toastTimer = null;
+    function toast(message, type = "") {
+      refs.toast.textContent = message;
+      refs.toast.className = `toast visible${type === "error" ? " error" : ""}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        refs.toast.className = "toast";
+      }, 3200);
+    }
+
+    function setActiveTab(tab) {
+      state.tab = tab;
+      refs.tabButtons.forEach((button) => button.classList.toggle("active", button.dataset.tab === tab));
+      refs.panels.forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === tab));
+    }
+
+    function renderNewDropZone() {
+      const imageHtml = state.newImagePreview
+        ? `<img src="${state.newImagePreview}" alt="Vista previa"><button class="drop-remove" type="button" id="removeNewImage">✕</button>`
+        : `<div class="drop-copy"><strong>Elegi una imagen</strong><span>Podes arrastrarla o hacer clic. La subida a Supabase se hace al guardar.</span><span>La imagen es opcional.</span></div>`;
+      refs.dropZoneNuevo.classList.toggle("has-image", !!state.newImagePreview);
+      refs.dropZoneNuevo.innerHTML = `<input id="fFoto" type="file" accept="image/*">${imageHtml}`;
+      refs.fFoto = document.getElementById("fFoto");
+      refs.fFoto.addEventListener("change", (event) => handleFileSelection(event.target.files?.[0], "new"));
+      refs.dropZoneNuevo.querySelector("#removeNewImage")?.addEventListener("click", clearNewImage);
+    }
+
+    function renderEditDropZone() {
+      const imageSrc = state.editImagePreview || (!state.editImageRemoved ? state.editingOriginalPhoto : "");
+      const imageHtml = imageSrc
+        ? `<img src="${escapeHtml(imageSrc)}" alt="Vista previa"><button class="drop-remove" type="button" id="removeEditImage">✕</button>`
+        : `<div class="drop-copy"><strong>Elegi una imagen</strong><span>Podes arrastrarla, hacer clic o pegar una captura con Ctrl+V.</span></div>`;
+      refs.dropZoneEdit.classList.toggle("has-image", !!imageSrc);
+      refs.dropZoneEdit.innerHTML = `<input id="editFoto" type="file" accept="image/*">${imageHtml}`;
+      refs.editFoto = document.getElementById("editFoto");
+      refs.editFoto.addEventListener("change", (event) => handleFileSelection(event.target.files?.[0], "edit"));
+      refs.dropZoneEdit.querySelector("#removeEditImage")?.addEventListener("click", clearEditImage);
+    }
+
+    function bindDropZoneEvents(zone, mode) {
+      zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("drag-over");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+      zone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        zone.classList.remove("drag-over");
+        const file = event.dataTransfer?.files?.[0];
+        if (file && file.type.startsWith("image/")) handleFileSelection(file, mode);
+      });
+    }
+
+    async function fileToDataUrl(file) {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleFileSelection(file, mode) {
+      if (!file || !file.type.startsWith("image/")) return;
+      const dataUrl = await fileToDataUrl(file);
+      if (mode === "new") {
+        state.newImageFile = file;
+        state.newImagePreview = dataUrl;
+        renderNewDropZone();
+        setStatus(refs.formStatus, "Imagen lista para subir cuando guardes el articulo.", "success");
+        return;
+      }
+      state.editImageFile = file;
+      state.editImagePreview = dataUrl;
+      state.editImageRemoved = false;
+      renderEditDropZone();
+      setStatus(refs.editStatus, "Imagen lista para subir cuando guardes los cambios.", "success");
+    }
+
+    function clearNewImage(event) {
+      event?.preventDefault();
+      state.newImageFile = null;
+      state.newImagePreview = "";
+      renderNewDropZone();
+    }
+
+    function clearEditImage(event) {
+      event?.preventDefault();
+      state.editImageFile = null;
+      state.editImagePreview = "";
+      state.editImageRemoved = true;
+      renderEditDropZone();
+    }
+
+    function getVisibleArticles() {
+      return state.articles.filter((article) => matchesFilters(article, state.search, state.filterChip));
+    }
+
+    function getApplyTargetArticles() {
+      return state.articles.filter((article) => matchesFilters(article, refs.applyTargetsSearch.value, state.applyTargetsChip, refs.editId.value.trim()));
+    }
+
+    function getPortadaTargetArticles() {
+      return state.articles.filter((article) => matchesFilters(article, refs.portadaTargetsSearch.value, state.portadaTargetsChip));
+    }
+
+    function renderAdminChipFilters() {
+      refs.adminChipFilters.forEach((chip) => chip.classList.toggle("active", chip.dataset.chip === state.filterChip));
+    }
+
+    function renderApplyChipFilters() {
+      refs.applyTargetsFilters.forEach((chip) => chip.classList.toggle("active", chip.dataset.chip === state.applyTargetsChip));
+    }
+
+    function renderPortadaChipFilters() {
+      refs.portadaTargetsFilters.forEach((chip) => chip.classList.toggle("active", chip.dataset.chip === state.portadaTargetsChip));
+    }
+
+    function renderLabelRow(article) {
+      const labels = [];
+      if (offerActive(article)) labels.push('<span class="label-pill">En oferta</span>');
+      if (article.destacado) labels.push('<span class="label-pill">Destacado</span>');
+      if (article.masVendido) labels.push('<span class="label-pill">Mas vendido</span>');
+      return labels.join("");
+    }
+
+    function renderArticleItem(article) {
+      const hasOffer = offerActive(article);
+      return `<article class="admin-item">
+        <div class="admin-thumb">${article.fotoUrl ? `<img src="${escapeHtml(article.fotoUrl)}" alt="${escapeHtml(article.nombre)}">` : "IMG"}</div>
+        <div>
+          <div class="item-title">${escapeHtml(article.nombre || "Articulo sin nombre")}</div>
+          <div class="item-lines">
+            <div class="item-line">Codigo: ${escapeHtml(article.codigo || "-")} · Rubro: ${escapeHtml(article.rubro || "-")}</div>
+            <div class="item-line">Stock: ${escapeHtml(article.stock || "-")}</div>
+            <div class="item-line">Tags invisibles: ${escapeHtml(tagsToText(article.tagsOcultos) || "-")}</div>
+            <div class="item-line">${hasOffer ? `Oferta ${escapeHtml(String(article.ofertaPct || 0))}% hasta ${escapeHtml(formatDate(article.ofertaHasta))}` : "Oferta inactiva"}</div>
+          </div>
+          <div class="price-line">${hasOffer ? `<small>${escapeHtml(formatPrice(article.precio))}</small>` : ""}${escapeHtml(formatPrice(hasOffer ? offerPrice(article.precio, article.ofertaPct) : article.precio))}</div>
+          <div class="label-row">${renderLabelRow(article)}</div>
+        </div>
+        <div class="item-actions">
+          <button class="icon-button" type="button" data-action="edit" data-code="${escapeHtml(article.codigo)}" title="Editar">✎</button>
+          <button class="icon-button" type="button" data-action="delete" data-code="${escapeHtml(article.codigo)}" title="Eliminar">🗑</button>
+        </div>
+      </article>`;
+    }
+
+    function renderArticleList() {
+      renderAdminChipFilters();
+      const list = getVisibleArticles();
+      refs.artContador.innerHTML = `<strong>${list.length}</strong> articulo${list.length === 1 ? "" : "s"} visible${list.length === 1 ? "" : "s"} de <strong>${state.articles.length}</strong>`;
+      refs.listaArticulos.innerHTML = list.length
+        ? list.map(renderArticleItem).join("")
+        : '<div class="empty-state">No encontramos articulos con ese filtro o busqueda.</div>';
+    }
+
+    function sectionMeta(sectionKey) {
+      if (sectionKey === "destacado") {
+        return {
+          kicker: "Seleccion del mostrador",
+          title: "Destacados",
+          subtitle: "Ideal para empujar las piezas que queres arriba de todo."
+        };
+      }
+      if (sectionKey === "masVendido") {
+        return {
+          kicker: "Movimiento real",
+          title: "Mas vendidos",
+          subtitle: "Usalo para ordenar manualmente que queres mostrar como lo que mas sale."
+        };
+      }
+      return {
+        kicker: "Precio activo",
+        title: "En oferta",
+        subtitle: "Perfecto para decidir exactamente que promos queres destacar."
+      };
+    }
+
+    function autoSection(sectionKey) {
+      if (sectionKey === "destacado") return state.articles.filter((article) => article.destacado).slice(0, 8);
+      if (sectionKey === "masVendido") return state.articles.filter((article) => article.masVendido).slice(0, 8);
+      return state.articles.filter((article) => offerActive(article)).slice(0, 8);
+    }
+
+    function resolveSection(sectionKey) {
+      const manualCodes = state.portadaConfig.sections?.[sectionKey] || [];
+      const byCode = new Map(state.articles.map((article) => [article.codigo, article]));
+      const manualItems = manualCodes.map((code) => byCode.get(code)).filter(Boolean);
+      if (state.portadaConfig.mode === "manual" && manualItems.length) return manualItems;
+      return autoSection(sectionKey);
+    }
+
+    function renderPortadaCard(article, sectionKey, index) {
+      const finalPrice = offerActive(article) ? offerPrice(article.precio, article.ofertaPct) : article.precio;
+      return `<article class="portada-card">
+        <div class="portada-card-head">
+          <div class="portada-name">${escapeHtml(article.nombre || "Articulo")}</div>
+          <button type="button" data-slot-section="${escapeHtml(sectionKey)}" data-slot-index="${index}">Cambiar</button>
+        </div>
+        <div class="portada-thumb">${article.fotoUrl ? `<img src="${escapeHtml(article.fotoUrl)}" alt="${escapeHtml(article.nombre || "Articulo")}">` : "IMG"}</div>
+        <div class="portada-detail">${escapeHtml(article.detalle || "Sin detalle disponible.")}</div>
+        <div class="item-line">Codigo: ${escapeHtml(article.codigo || "-")} · Stock: ${escapeHtml(article.stock || "-")}</div>
+        <div class="label-row">${renderLabelRow(article)}</div>
+        <div class="price-line">${escapeHtml(formatPrice(finalPrice))}</div>
+      </article>`;
+    }
+
+    function renderPortadaSection(sectionKey) {
+      const meta = sectionMeta(sectionKey);
+      const items = resolveSection(sectionKey);
+      const sourceText = state.portadaConfig.mode === "manual" && (state.portadaConfig.sections?.[sectionKey] || []).length ? "Manual" : "Automatico";
+      const content = items.length
+        ? `<div class="portada-preview-grid">${items.map((article, index) => renderPortadaCard(article, sectionKey, index)).join("")}</div>`
+        : '<div class="empty-state">Todavia no hay articulos para esta seccion.</div>';
+      return `<section class="portada-section">
+        <div class="portada-section-head">
+          <div>
+            <div class="portada-section-kicker">${escapeHtml(meta.kicker)}</div>
+            <div class="portada-section-title">${escapeHtml(meta.title)}</div>
+            <div class="portada-section-subtitle">${escapeHtml(meta.subtitle)}</div>
+          </div>
+          <div class="actions">
+            <span class="mode-pill">${escapeHtml(sourceText)}</span>
+            <button class="secondary-button" type="button" data-open-portada="${escapeHtml(sectionKey)}">Editar seleccion</button>
+          </div>
+        </div>
+        ${content}
+      </section>`;
+    }
+
+    function renderPortada() {
+      const destacados = resolveSection("destacado");
+      const masVendidos = resolveSection("masVendido");
+      const ofertas = resolveSection("oferta");
+      refs.portadaStatDestacado.textContent = destacados.length;
+      refs.portadaStatMasVendido.textContent = masVendidos.length;
+      refs.portadaStatOferta.textContent = ofertas.length;
+      refs.portadaToolbarSub.innerHTML = state.portadaConfig.mode === "manual"
+        ? "Modo actual: <strong>manual</strong>. Puedes cambiar el orden y los articulos de cada bloque."
+        : "Modo actual: <strong>automatico</strong>. Si quieres tomar control, entra en cualquier seccion y guardala en manual.";
+      refs.portadaSections.innerHTML = [
+        renderPortadaSection("destacado"),
+        renderPortadaSection("masVendido"),
+        renderPortadaSection("oferta")
+      ].join("");
+    }
+
+    function renderEditChips() {
+      refs.editChipOferta.classList.toggle("active", !!state.editingMeta.oferta);
+      refs.editChipDestacado.classList.toggle("active", !!state.editingMeta.destacado);
+      refs.editChipMasVendido.classList.toggle("active", !!state.editingMeta.masVendido);
+
+      if (!state.editingMeta.oferta) {
+        refs.ofertaSummary.textContent = "Oferta inactiva.";
+        return;
+      }
+      const finalPrice = offerPrice(Number(refs.editPrecio.value || 0), state.editingMeta.ofertaPct);
+      refs.ofertaSummary.innerHTML = `Descuento: <strong>${escapeHtml(String(state.editingMeta.ofertaPct || 0))}%</strong> · Precio final: <strong>${escapeHtml(formatPrice(finalPrice))}</strong> · Hasta: <strong>${escapeHtml(formatDate(state.editingMeta.ofertaHasta))}</strong>`;
+    }
+
+    function renderOfferPreview() {
+      const pct = clampPct(refs.ofertaPctInput.value);
+      const until = sanitizeIsoDate(refs.ofertaHastaInput.value);
+      const finalPrice = offerPrice(Number(refs.editPrecio.value || 0), pct);
+      refs.offerPreview.innerHTML = `
+        <div>Precio lista: <strong>${escapeHtml(formatPrice(refs.editPrecio.value || 0))}</strong></div>
+        <div>Descuento: <strong>${escapeHtml(String(pct))}%</strong></div>
+        <div>Precio oferta: <strong>${escapeHtml(formatPrice(finalPrice))}</strong></div>
+        <div>Hasta: <strong>${escapeHtml(formatDate(until))}</strong></div>
+      `;
+    }
+
+    function renderApplyTargetsList() {
+      renderApplyChipFilters();
+      const list = getApplyTargetArticles();
+      refs.applyTargetsCounter.innerHTML = `<strong>${state.applyTargetsSelection.size}</strong> seleccionado${state.applyTargetsSelection.size === 1 ? "" : "s"}`;
+      refs.applyTargetsList.innerHTML = list.length
+        ? list.map((article) => {
+            const selected = state.applyTargetsSelection.has(article.codigo);
+            return `<article class="selection-item${selected ? " selected" : ""}" data-code="${escapeHtml(article.codigo)}">
+              <div class="selection-thumb">${article.fotoUrl ? `<img src="${escapeHtml(article.fotoUrl)}" alt="${escapeHtml(article.nombre)}">` : "IMG"}</div>
+              <div>
+                <div class="item-title">${escapeHtml(article.nombre || "Articulo")}</div>
+                <div class="selection-meta">Codigo: ${escapeHtml(article.codigo || "-")} · Rubro: ${escapeHtml(article.rubro || "-")}</div>
+                <div class="selection-meta">${escapeHtml(article.detalle || "Sin detalle disponible.")}</div>
+              </div>
+              <div class="selection-order">${selected ? "✓" : ""}</div>
+            </article>`;
+          }).join("")
+        : '<div class="empty-state">No hay articulos disponibles para copiar cambios.</div>';
+    }
+
+    function renderApplyFieldButtons() {
+      refs.applyFieldButtons.forEach((button) => {
+        button.classList.toggle("active", state.applyFieldsSelection.has(button.dataset.field));
+      });
+    }
+
+    function renderPortadaTargetsList() {
+      renderPortadaChipFilters();
+      const list = getPortadaTargetArticles();
+      refs.portadaTargetsCounter.innerHTML = `<strong>${state.portadaTargetsDraft.length}</strong> seleccionado${state.portadaTargetsDraft.length === 1 ? "" : "s"}`;
+      refs.portadaTargetsList.innerHTML = list.length
+        ? list.map((article) => {
+            const index = state.portadaTargetsDraft.indexOf(article.codigo);
+            const selected = index !== -1;
+            return `<article class="selection-item${selected ? " selected" : ""}" data-code="${escapeHtml(article.codigo)}">
+              <div class="selection-thumb">${article.fotoUrl ? `<img src="${escapeHtml(article.fotoUrl)}" alt="${escapeHtml(article.nombre)}">` : "IMG"}</div>
+              <div>
+                <div class="item-title">${escapeHtml(article.nombre || "Articulo")}</div>
+                <div class="selection-meta">Codigo: ${escapeHtml(article.codigo || "-")} · Rubro: ${escapeHtml(article.rubro || "-")}</div>
+                <div class="selection-meta">${escapeHtml(article.detalle || "Sin detalle disponible.")}</div>
+              </div>
+              <div class="selection-order">${selected ? index + 1 : ""}</div>
+            </article>`;
+          }).join("")
+        : '<div class="empty-state">No hay articulos para elegir en esta seccion.</div>';
+    }
+
+    async function uploadImageToSupabase(file, codigo) {
+      const safeCode = String(codigo || "articulo").toLowerCase().replace(/[^a-z0-9-_]+/g, "-");
+      const safeName = String(file.name || "imagen").toLowerCase().replace(/[^a-z0-9.\-_]+/g, "-");
+      const filePath = `${Date.now()}-${safeCode}-${safeName}`;
+      const uploadUrl = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${filePath}`;
+
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": file.type || "application/octet-stream",
+          "x-upsert": "false"
+        },
+        body: file
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "No se pudo subir la imagen a Supabase.");
+      }
+
+      return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${filePath}`;
+    }
+
+    function clearCreateForm() {
+      refs.fCodigo.value = "";
+      refs.fNombre.value = "";
+      refs.fDetalle.value = "";
+      refs.fRubro.value = "";
+      refs.fStock.value = "";
+      refs.fTagsOcultos.value = "";
+      refs.fPrecio.value = "";
+      state.newImageFile = null;
+      state.newImagePreview = "";
+      renderNewDropZone();
+      setStatus(refs.formStatus, "");
+    }
+
+    function openModal(modal) {
+      modal.classList.add("visible");
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("visible");
+    }
+
+    function closeEditModal() {
+      closeModal(refs.modalOverlay);
+      closeModal(refs.modalOferta);
+      closeModal(refs.modalApplyTargets);
+      closeModal(refs.modalApplyFields);
+      setStatus(refs.editStatus, "");
+      state.applyTargetsSelection = new Set();
+      state.applyFieldsSelection = new Set();
+      renderApplyFieldButtons();
+      renderApplyTargetsList();
+    }
+
+    function replaceCodeInConfig(config, oldCode, newCode) {
+      const safe = sanitizeHomeLandingConfig(config);
+      if (!oldCode || oldCode === newCode) return safe;
+      return sanitizeHomeLandingConfig({
+        mode: safe.mode,
+        sections: {
+          destacado: safe.sections.destacado.map((code) => code === oldCode ? newCode : code),
+          masVendido: safe.sections.masVendido.map((code) => code === oldCode ? newCode : code),
+          oferta: safe.sections.oferta.map((code) => code === oldCode ? newCode : code)
+        }
+      });
+    }
+
+    function removeCodeFromConfig(config, code) {
+      const safe = sanitizeHomeLandingConfig(config);
+      return sanitizeHomeLandingConfig({
+        mode: safe.mode,
+        sections: {
+          destacado: safe.sections.destacado.filter((item) => item !== code),
+          masVendido: safe.sections.masVendido.filter((item) => item !== code),
+          oferta: safe.sections.oferta.filter((item) => item !== code)
+        }
+      });
+    }
+
+    async function savePortadaConfig(config) {
+      const safe = sanitizeHomeLandingConfig(config);
+      await setDoc(doc(db, "config", HOME_LANDING_DOC_ID), {
+        mode: safe.mode,
+        sections: safe.sections,
+        updatedAt: nowIso()
+      });
+      state.portadaConfig = safe;
+      renderPortada();
+    }
+
+    async function loadInitialData() {
+      try {
+        const [articles, portadaSnap] = await Promise.all([
+          loadCatalogArticles(),
+          getDoc(doc(db, "config", HOME_LANDING_DOC_ID))
+        ]);
+
+        state.articles = articles;
+        state.portadaConfig = sanitizeHomeLandingConfig(portadaSnap.exists() ? portadaSnap.data() : null);
+        renderArticleList();
+        renderPortada();
+      } catch (error) {
+        console.error(error);
+        refs.artContador.textContent = "No se pudieron cargar los articulos.";
+        refs.listaArticulos.innerHTML = `<div class="empty-state">${escapeHtml(error.message || "Revisa Firestore.")}</div>`;
+        refs.portadaSections.innerHTML = "";
+        toast(error.message || "No se pudo cargar la base.", "error");
+      }
+    }
+
+    async function saveNewArticle() {
+      const codigo = refs.fCodigo.value.trim();
+      const nombre = refs.fNombre.value.trim();
+      const detalle = refs.fDetalle.value.trim();
+      const rubro = refs.fRubro.value.trim();
+      const stock = refs.fStock.value.trim();
+      const tagsOcultos = normalizeTags(refs.fTagsOcultos.value);
+      const precio = Number(refs.fPrecio.value || 0);
+
+      if (!codigo || !nombre || !precio) {
+        setStatus(refs.formStatus, "Completa codigo, nombre y precio.", "error");
+        return;
+      }
+      if (state.articles.some((article) => article.codigo === codigo)) {
+        setStatus(refs.formStatus, "Ya existe un articulo con ese codigo.", "error");
+        return;
+      }
+
+      refs.btnGuardar.disabled = true;
+      setStatus(refs.formStatus, "Guardando articulo...");
+      try {
+        let fotoUrl = "";
+        if (state.newImageFile) {
+          setStatus(refs.formStatus, "Subiendo imagen a Supabase...");
+          fotoUrl = await uploadImageToSupabase(state.newImageFile, codigo);
+        }
+
+        const article = normalizeArticle({
+          codigo,
+          nombre,
+          detalle,
+          rubro,
+          stock,
+          tagsOcultos,
+          precio,
+          fotoUrl,
+          oferta: false,
+          ofertaPct: 0,
+          ofertaHasta: "",
+          destacado: false,
+          masVendido: false,
+          createdAt: nowIso(),
+          updatedAt: nowIso()
+        }, codigo);
+
+        const nextArticles = sortArticles([article, ...state.articles]);
+        setStatus(refs.formStatus, "Publicando catalogo en Cloudinary...");
+        await publishCatalogJson(nextArticles);
+        state.articles = nextArticles;
+        renderArticleList();
+        renderPortada();
+        clearCreateForm();
+        setStatus(refs.formStatus, "Articulo guardado correctamente.", "success");
+        toast("Articulo guardado.");
+      } catch (error) {
+        console.error(error);
+        setStatus(refs.formStatus, error.message || "No se pudo guardar el articulo.", "error");
+      } finally {
+        refs.btnGuardar.disabled = false;
+      }
+    }
+
+    function openEditModal(code) {
+      const article = state.articles.find((item) => item.codigo === code);
+      if (!article) return;
+      refs.editId.value = article.codigo;
+      refs.editCodigo.value = article.codigo;
+      refs.editNombre.value = article.nombre;
+      refs.editDetalle.value = article.detalle;
+      refs.editRubro.value = article.rubro;
+      refs.editStock.value = article.stock;
+      refs.editTagsOcultos.value = tagsToText(article.tagsOcultos);
+      refs.editPrecio.value = article.precio || "";
+      state.editingMeta = {
+        oferta: !!article.oferta,
+        destacado: !!article.destacado,
+        masVendido: !!article.masVendido,
+        ofertaPct: clampPct(article.ofertaPct),
+        ofertaHasta: sanitizeIsoDate(article.ofertaHasta)
+      };
+      state.editingOriginalPhoto = article.fotoUrl || "";
+      state.editImageFile = null;
+      state.editImagePreview = "";
+      state.editImageRemoved = false;
+      renderEditDropZone();
+      renderEditChips();
+      setStatus(refs.editStatus, "");
+      openModal(refs.modalOverlay);
+    }
+
+    function applyFieldsToTarget(target, source, fields) {
+      const updated = { ...target, updatedAt: nowIso() };
+      if (fields.has("etiquetas")) {
+        updated.oferta = source.oferta;
+        updated.ofertaPct = source.ofertaPct;
+        updated.ofertaHasta = source.ofertaHasta;
+        updated.destacado = source.destacado;
+        updated.masVendido = source.masVendido;
+      }
+      if (fields.has("detalle")) {
+        updated.detalle = source.detalle;
+        updated.stock = source.stock;
+      }
+      if (fields.has("tags")) {
+        updated.tagsOcultos = [...source.tagsOcultos];
+      }
+      if (fields.has("foto")) {
+        updated.fotoUrl = source.fotoUrl || "";
+      }
+      return normalizeArticle(updated, updated.codigo);
+    }
+
+    async function saveEdition({ selectedCodes = [], fields = [] } = {}) {
+      const originalCode = refs.editId.value.trim();
+      const codigo = refs.editCodigo.value.trim();
+      const nombre = refs.editNombre.value.trim();
+      const detalle = refs.editDetalle.value.trim();
+      const rubro = refs.editRubro.value.trim();
+      const stock = refs.editStock.value.trim();
+      const tagsOcultos = normalizeTags(refs.editTagsOcultos.value);
+      const precio = Number(refs.editPrecio.value || 0);
+
+      if (!originalCode || !codigo || !nombre || !precio) {
+        throw new Error("Completa los campos obligatorios.");
+      }
+
+      if (state.articles.some((article) => article.codigo === codigo && article.codigo !== originalCode)) {
+        throw new Error("Ya existe otro articulo con ese codigo.");
+      }
+
+      if (state.editingMeta.oferta) {
+        if (clampPct(state.editingMeta.ofertaPct) <= 0) throw new Error("La oferta necesita un porcentaje valido.");
+        if (!sanitizeIsoDate(state.editingMeta.ofertaHasta)) throw new Error("La oferta necesita fecha hasta.");
+      }
+
+      const original = state.articles.find((article) => article.codigo === originalCode);
+      if (!original) throw new Error("No encontre el articulo original.");
+
+      let fotoUrl = state.editingOriginalPhoto || "";
+      if (state.editImageRemoved) fotoUrl = "";
+      if (state.editImageFile) {
+        setStatus(refs.editStatus, "Subiendo imagen a Supabase...");
+        fotoUrl = await uploadImageToSupabase(state.editImageFile, codigo);
+      }
+
+      const source = normalizeArticle({
+        ...original,
+        codigo,
+        nombre,
+        detalle,
+        rubro,
+        stock,
+        tagsOcultos,
+        precio,
+        fotoUrl,
+        oferta: !!state.editingMeta.oferta,
+        ofertaPct: clampPct(state.editingMeta.ofertaPct),
+        ofertaHasta: sanitizeIsoDate(state.editingMeta.ofertaHasta),
+        destacado: !!state.editingMeta.destacado,
+        masVendido: !!state.editingMeta.masVendido,
+        createdAt: original.createdAt || nowIso(),
+        updatedAt: nowIso()
+      }, codigo);
+
+      const selectionSet = new Set(selectedCodes.map((item) => String(item || "").trim()).filter(Boolean));
+      const fieldsSet = new Set(fields);
+      const nextArticles = [];
+      const affectedArticles = [];
+
+      for (const article of state.articles) {
+        if (article.codigo === originalCode) {
+          nextArticles.push(source);
+          affectedArticles.push(source);
+          continue;
+        }
+        if (selectionSet.has(article.codigo)) {
+          const updated = applyFieldsToTarget(article, source, fieldsSet);
+          nextArticles.push(updated);
+          affectedArticles.push(updated);
+          continue;
+        }
+        nextArticles.push(article);
+      }
+
+      let nextConfig = state.portadaConfig;
+      let shouldSaveConfig = false;
+
+      if (originalCode !== codigo) {
+        nextConfig = replaceCodeInConfig(nextConfig, originalCode, codigo);
+        shouldSaveConfig = true;
+      }
+
+      {
+        const sanitized = sanitizeHomeLandingConfig(nextConfig);
+        const affectedMap = new Map(affectedArticles.map((article) => [article.codigo, article]));
+        const nextSections = {
+          destacado: sanitized.sections.destacado.filter((code) => {
+            const article = affectedMap.get(code);
+            return article ? article.destacado : true;
+          }),
+          masVendido: sanitized.sections.masVendido.filter((code) => {
+            const article = affectedMap.get(code);
+            return article ? article.masVendido : true;
+          }),
+          oferta: sanitized.sections.oferta.filter((code) => {
+            const article = affectedMap.get(code);
+            return article ? offerActive(article) : true;
+          })
+        };
+        const cleanedConfig = sanitizeHomeLandingConfig({ mode: sanitized.mode, sections: nextSections });
+        if (JSON.stringify(cleanedConfig.sections) !== JSON.stringify(sanitized.sections) || cleanedConfig.mode !== sanitized.mode) {
+          nextConfig = cleanedConfig;
+          shouldSaveConfig = true;
+        }
+      }
+
+      setStatus(refs.editStatus, "Publicando catalogo en Cloudinary...");
+      await publishCatalogJson(nextArticles);
+
+      if (shouldSaveConfig) {
+        await savePortadaConfig(nextConfig);
+      } else {
+        state.portadaConfig = sanitizeHomeLandingConfig(nextConfig);
+      }
+
+      state.articles = sortArticles(nextArticles.map((article) => normalizeArticle(article, article.codigo)));
+      renderArticleList();
+      renderPortada();
+      closeEditModal();
+      toast(selectionSet.size ? "Cambios aplicados al articulo y a los seleccionados." : "Articulo actualizado.");
+    }
+
+    async function saveCurrentEdit() {
+      refs.btnGuardarEdit.disabled = true;
+      refs.btnAplicarRelacionados.disabled = true;
+      setStatus(refs.editStatus, "Guardando cambios...");
+      try {
+        await saveEdition();
+      } catch (error) {
+        console.error(error);
+        setStatus(refs.editStatus, error.message || "No se pudo guardar la edicion.", "error");
+      } finally {
+        refs.btnGuardarEdit.disabled = false;
+        refs.btnAplicarRelacionados.disabled = false;
+      }
+    }
+
+    async function deleteArticle(code) {
+      if (!window.confirm("¿Eliminar este articulo?")) return;
+      try {
+        const nextArticles = sortArticles(state.articles.filter((article) => article.codigo !== code));
+        await publishCatalogJson(nextArticles);
+        state.articles = nextArticles;
+        const nextConfig = removeCodeFromConfig(state.portadaConfig, code);
+        await savePortadaConfig(nextConfig);
+        renderArticleList();
+        toast("Articulo eliminado.");
+      } catch (error) {
+        console.error(error);
+        toast(error.message || "No se pudo eliminar el articulo.", "error");
+      }
+    }
+
+    function openOfferModal() {
+      state.offerSnapshot = { ...state.editingMeta };
+      refs.ofertaPctInput.value = state.editingMeta.ofertaPct || "";
+      refs.ofertaHastaInput.value = state.editingMeta.ofertaHasta || "";
+      renderOfferPreview();
+      openModal(refs.modalOferta);
+    }
+
+    function closeOfferModal(reset = false) {
+      if (reset && state.offerSnapshot) state.editingMeta = { ...state.offerSnapshot };
+      closeModal(refs.modalOferta);
+      renderEditChips();
+    }
+
+    function openApplyTargetsModal() {
+      state.applyTargetsSelection = new Set();
+      state.applyFieldsSelection = new Set();
+      refs.applyTargetsSearch.value = refs.searchAdmin.value.trim();
+      state.applyTargetsChip = "";
+      renderApplyChipFilters();
+      renderApplyFieldButtons();
+      renderApplyTargetsList();
+      openModal(refs.modalApplyTargets);
+    }
+
+    function openApplyFieldsModal() {
+      if (!state.applyTargetsSelection.size) {
+        toast("Selecciona al menos un articulo.", "error");
+        return;
+      }
+      closeModal(refs.modalApplyTargets);
+      openModal(refs.modalApplyFields);
+    }
+
+    async function applySelectedChanges() {
+      if (!state.applyTargetsSelection.size) {
+        toast("Selecciona al menos un articulo.", "error");
+        return;
+      }
+      if (!state.applyFieldsSelection.size) {
+        toast("Elige que cambios quieres copiar.", "error");
+        return;
+      }
+      refs.btnAplicarCamposSeleccionados.disabled = true;
+      try {
+        await saveEdition({
+          selectedCodes: [...state.applyTargetsSelection],
+          fields: [...state.applyFieldsSelection]
+        });
+      } catch (error) {
+        console.error(error);
+        closeModal(refs.modalApplyFields);
+        openModal(refs.modalOverlay);
+        setStatus(refs.editStatus, error.message || "No se pudieron aplicar los cambios.", "error");
+      } finally {
+        refs.btnAplicarCamposSeleccionados.disabled = false;
+      }
+    }
+
+    function openPortadaTargets(sectionKey, slotIndex = null) {
+      const meta = sectionMeta(sectionKey);
+      const currentItems = resolveSection(sectionKey);
+      state.portadaTargetsSection = sectionKey;
+      state.portadaSlotIndex = Number.isInteger(slotIndex) ? slotIndex : null;
+      state.portadaTargetsChip = "";
+      refs.portadaTargetsSearch.value = "";
+      renderPortadaChipFilters();
+
+      if (state.portadaSlotIndex !== null) {
+        const currentCode = String(currentItems[state.portadaSlotIndex]?.codigo || "").trim();
+        state.portadaTargetsDraft = currentCode ? [currentCode] : [];
+        refs.modalPortadaTargetsTitle.textContent = "Cambiar articulo";
+        refs.modalPortadaTargetsSubtitle.textContent = "Elige el articulo que quieres poner en ese lugar. Se reemplaza solo ese.";
+      } else {
+        state.portadaTargetsDraft = [...(state.portadaConfig.sections?.[sectionKey] || [])];
+        refs.modalPortadaTargetsTitle.textContent = `Portada · ${meta.title}`;
+        refs.modalPortadaTargetsSubtitle.textContent = `El orden en que marcas los articulos se conserva en ${meta.title}.`;
+      }
+
+      renderPortadaTargetsList();
+      openModal(refs.modalPortadaTargets);
+    }
+
+    async function savePortadaTargets() {
+      if (!state.portadaTargetsSection) return;
+      refs.btnGuardarPortadaTargets.disabled = true;
+      try {
+        let nextCodes = [];
+        if (state.portadaSlotIndex !== null) {
+          const currentCodes = resolveSection(state.portadaTargetsSection).map((article) => article.codigo);
+          currentCodes[state.portadaSlotIndex] = state.portadaTargetsDraft[0] || currentCodes[state.portadaSlotIndex];
+          nextCodes = sanitizeHomeLandingCodes(currentCodes);
+        } else {
+          nextCodes = sanitizeHomeLandingCodes(state.portadaTargetsDraft);
+        }
+
+        const nextConfig = sanitizeHomeLandingConfig({
+          mode: "manual",
+          sections: {
+            ...state.portadaConfig.sections,
+            [state.portadaTargetsSection]: nextCodes
+          }
+        });
+
+        await savePortadaConfig(nextConfig);
+        closeModal(refs.modalPortadaTargets);
+        toast("Portada actualizada.");
+      } catch (error) {
+        console.error(error);
+        toast(error.message || "No se pudo guardar la portada.", "error");
+      } finally {
+        refs.btnGuardarPortadaTargets.disabled = false;
+      }
+    }
+
+    refs.tabButtons.forEach((button) => {
+      button.addEventListener("click", () => setActiveTab(button.dataset.tab || "articulos"));
+    });
+
+    refs.btnGuardar.addEventListener("click", saveNewArticle);
+    refs.btnLimpiar.addEventListener("click", clearCreateForm);
+    refs.searchAdmin.addEventListener("input", (event) => {
+      state.search = event.target.value || "";
+      renderArticleList();
+    });
+
+    refs.adminChipFilters.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        state.filterChip = chip.dataset.chip || "";
+        renderArticleList();
+      });
+    });
+
+    refs.listaArticulos.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+      const code = String(button.dataset.code || "").trim();
+      if (!code) return;
+      if (button.dataset.action === "edit") openEditModal(code);
+      if (button.dataset.action === "delete") deleteArticle(code);
+    });
+
+    document.querySelectorAll("[data-close-modal]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const modalId = button.dataset.closeModal;
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        if (modalId === "modalOverlay") closeEditModal();
+        else if (modalId === "modalOferta") closeOfferModal(true);
+        else if (modalId === "modalApplyFields") {
+          closeModal(refs.modalApplyFields);
+          openModal(refs.modalApplyTargets);
+        } else closeModal(modal);
+      });
+    });
+
+    document.querySelectorAll(".modal-overlay").forEach((overlay) => {
+      overlay.addEventListener("click", (event) => {
+        if (event.target !== overlay) return;
+        if (overlay === refs.modalOverlay) closeEditModal();
+        else if (overlay === refs.modalOferta) closeOfferModal(true);
+        else if (overlay === refs.modalApplyFields) {
+          closeModal(refs.modalApplyFields);
+          openModal(refs.modalApplyTargets);
+        } else closeModal(overlay);
+      });
+    });
+
+    refs.editChipOferta.addEventListener("click", () => {
+      if (!state.editingMeta.oferta) {
+        state.editingMeta.oferta = true;
+        renderEditChips();
+        openOfferModal();
+        return;
+      }
+      state.editingMeta.oferta = false;
+      renderEditChips();
+    });
+    refs.editChipDestacado.addEventListener("click", () => {
+      state.editingMeta.destacado = !state.editingMeta.destacado;
+      renderEditChips();
+    });
+    refs.editChipMasVendido.addEventListener("click", () => {
+      state.editingMeta.masVendido = !state.editingMeta.masVendido;
+      renderEditChips();
+    });
+
+    refs.btnGuardarEdit.addEventListener("click", saveCurrentEdit);
+    refs.btnAplicarRelacionados.addEventListener("click", openApplyTargetsModal);
+    refs.editPrecio.addEventListener("input", () => {
+      renderEditChips();
+      if (refs.modalOferta.classList.contains("visible")) renderOfferPreview();
+    });
+
+    refs.ofertaPctInput.addEventListener("input", renderOfferPreview);
+    refs.ofertaHastaInput.addEventListener("change", renderOfferPreview);
+    refs.btnCancelarOferta.addEventListener("click", () => closeOfferModal(true));
+    refs.btnGuardarOferta.addEventListener("click", () => {
+      const pct = clampPct(refs.ofertaPctInput.value);
+      const until = sanitizeIsoDate(refs.ofertaHastaInput.value);
+      if (pct <= 0) {
+        toast("Ingresa un porcentaje mayor a 0.", "error");
+        return;
+      }
+      if (!until) {
+        toast("Elige la fecha hasta de la oferta.", "error");
+        return;
+      }
+      state.editingMeta.oferta = true;
+      state.editingMeta.ofertaPct = pct;
+      state.editingMeta.ofertaHasta = until;
+      closeModal(refs.modalOferta);
+      renderEditChips();
+    });
+
+    refs.applyTargetsSearch.addEventListener("input", renderApplyTargetsList);
+    refs.applyTargetsFilters.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        state.applyTargetsChip = chip.dataset.chip || "";
+        renderApplyTargetsList();
+      });
+    });
+    refs.applyTargetsList.addEventListener("click", (event) => {
+      const item = event.target.closest("[data-code]");
+      if (!item) return;
+      const code = String(item.dataset.code || "").trim();
+      if (!code) return;
+      if (state.applyTargetsSelection.has(code)) state.applyTargetsSelection.delete(code);
+      else state.applyTargetsSelection.add(code);
+      renderApplyTargetsList();
+    });
+    refs.btnContinuarApplyTargets.addEventListener("click", openApplyFieldsModal);
+    refs.applyFieldButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const field = button.dataset.field || "";
+        if (!field) return;
+        if (state.applyFieldsSelection.has(field)) state.applyFieldsSelection.delete(field);
+        else state.applyFieldsSelection.add(field);
+        renderApplyFieldButtons();
+      });
+    });
+    refs.btnCancelarApplyFields.addEventListener("click", () => {
+      closeModal(refs.modalApplyFields);
+      openModal(refs.modalApplyTargets);
+    });
+    refs.btnAplicarCamposSeleccionados.addEventListener("click", applySelectedChanges);
+
+    refs.btnPortadaAutomatico.addEventListener("click", async () => {
+      refs.btnPortadaAutomatico.disabled = true;
+      try {
+        await savePortadaConfig({
+          mode: "auto",
+          sections: state.portadaConfig.sections
+        });
+        toast("Portada en modo automatico.");
+      } catch (error) {
+        console.error(error);
+        toast(error.message || "No se pudo activar el modo automatico.", "error");
+      } finally {
+        refs.btnPortadaAutomatico.disabled = false;
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const portadaButton = event.target.closest("[data-open-portada]");
+      if (portadaButton) {
+        openPortadaTargets(portadaButton.dataset.openPortada || "destacado");
+        return;
+      }
+      const slotButton = event.target.closest("[data-slot-section]");
+      if (slotButton) {
+        openPortadaTargets(slotButton.dataset.slotSection || "destacado", Number(slotButton.dataset.slotIndex || 0));
+      }
+    });
+
+    refs.portadaTargetsSearch.addEventListener("input", renderPortadaTargetsList);
+    refs.portadaTargetsFilters.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        state.portadaTargetsChip = chip.dataset.chip || "";
+        renderPortadaTargetsList();
+      });
+    });
+    refs.portadaTargetsList.addEventListener("click", (event) => {
+      const item = event.target.closest("[data-code]");
+      if (!item) return;
+      const code = String(item.dataset.code || "").trim();
+      if (!code) return;
+
+      if (state.portadaSlotIndex !== null) {
+        state.portadaTargetsDraft = [code];
+        savePortadaTargets();
+        return;
+      }
+
+      const index = state.portadaTargetsDraft.indexOf(code);
+      if (index !== -1) state.portadaTargetsDraft.splice(index, 1);
+      else state.portadaTargetsDraft.push(code);
+      renderPortadaTargetsList();
+    });
+    refs.btnGuardarPortadaTargets.addEventListener("click", savePortadaTargets);
+
+    document.addEventListener("paste", async (event) => {
+      if (!refs.modalOverlay.classList.contains("visible")) return;
+      const items = [...(event.clipboardData?.items || [])];
+      const imageItem = items.find((item) => item.type.startsWith("image/"));
+      if (!imageItem) return;
+      const file = imageItem.getAsFile();
+      if (!file) return;
+      event.preventDefault();
+      await handleFileSelection(file, "edit");
+    });
+
+    bindDropZoneEvents(refs.dropZoneNuevo, "new");
+    bindDropZoneEvents(refs.dropZoneEdit, "edit");
+    renderNewDropZone();
+    renderEditDropZone();
+    renderApplyFieldButtons();
+    loadInitialData();
+  </script>
+</body>
+</html>
